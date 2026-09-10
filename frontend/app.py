@@ -13,7 +13,7 @@ def _get_backend_url() -> str:
     try:
         return st.secrets["BACKEND_URL"]
     except Exception:
-        return os.getenv("BACKEND_URL", "http://localhost:8000/ask")
+        return os.getenv("BACKEND_URL", "http://localhost:8000")
 
 
 BACKEND_URL = _get_backend_url()
@@ -42,7 +42,7 @@ if question:
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             try:
-                response = requests.post(BACKEND_URL, json={"question": question}, timeout=60)
+                response = requests.post(f"{BACKEND_URL}/ask", json={"question": question}, timeout=60)
                 response.raise_for_status()
                 data = response.json()
                 answer = data.get("answer", "")
