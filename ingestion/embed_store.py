@@ -11,13 +11,12 @@ from langchain_chroma import Chroma
 
 
 def _get_embeddings():
-    model_name = "BAAI/bge-large-en-v1.5"
-    
-    return HuggingFaceEmbeddings(
-        model_name=model_name,
-        model_kwargs={'device': 'cpu'},
-        encode_kwargs={'normalize_embeddings': True}
-    )
+      model_name = os.getenv("EMBEDDING_MODEL", "BAAI/bge-large-en-v1.5")
+      return HuggingFaceEmbeddings(
+          model_name=model_name,
+          model_kwargs={'device': 'cpu'},
+          encode_kwargs={'normalize_embeddings': True}
+      )
 
 
 
