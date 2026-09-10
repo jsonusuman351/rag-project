@@ -9,12 +9,15 @@ from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_chroma import Chroma
 
 
-def _get_embeddings():
-    # FastEmbed runs on ONNX Runtime (no PyTorch), so it stays light enough
-    # for a free-tier server — no API key, no HuggingFace token needed.
-    model = os.getenv("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
-    return FastEmbedEmbeddings(model_name=model)
+_embeddings = None  # cached after first load, reused for every later request
 
+
+def _get_embeddings():
+    global _embeddings
+    if _embeddings is None:
+        model = os.getenv("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
+        _embeddings = FastEmbedEmbeddings(model_name=model)
+    return _embeddings
 
 def build_vectorstore(chunks, persist_dir: str = None):
     """
